@@ -1,6 +1,6 @@
 import { getStorage, ref, getDownloadURL } from "firebase/storage"
 import { initializeApp } from "firebase/app"
-import { doc, getDoc, getDocs, updateDoc, getFirestore, collection, query, onSnapshot } from 'firebase/firestore'
+import { doc, getDoc, addDoc, getDocs, updateDoc, getFirestore, collection, query, onSnapshot } from 'firebase/firestore'
 import Firestorage from "../types/Firestorage.js"
 // import { capitalizeFirstLetter } from '../utils/index.js'
 
@@ -50,7 +50,26 @@ class FirestoreOrm{
     }
 
     buildCreateFunctions(){
-
+        Object.keys(this.collections).forEach((collectionName) => {
+            const createFunctionName = 'create'
+            const createFunction = async function(data){
+                const docRef = collection(this.db, collectionName)
+                const procData = Object.keys(this.collectionConfig[collectionName]).reduce((acc, field) => {
+                    if(data[field]){
+                        acc[field] = data[field]
+                    }
+                    return acc
+                }, {})
+                return new Promise((resolve, reject) => {
+                    addDoc(docRef, procData).then((docRef) => {
+                        resolve(docRef.id)
+                    })
+                    .catch(reject)
+                })
+            }.bind(this)
+            FirestoreOrm.definePropertyFunction(createFunctionName, this.collections[collectionName].functions, createFunction)
+            FirestoreOrm.definePropertyFunction(createFunctionName, this[collectionName].functions, createFunction)
+        })
     }
 
     buildDeleteFunctions(){

@@ -27,7 +27,7 @@ const orm = new FirestoreOrm(config, collection);
 
 describe('Api', function(){
     it('fetch', async function(){
-        const fetched = await orm.collections.testing.functions.checkByQuery([ where('hello', '==', 'hello') ])
+        const fetched = await orm.collections.testing.functions.create({ hello: 'hi', test: 'hoha' })
         console.log(fetched)
         assert.notEqual(fetched.length, 0)
     })
