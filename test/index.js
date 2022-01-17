@@ -1,5 +1,6 @@
 import FirestoreOrm from "../orm/FirestoreOrm.js";
 import Firestorage from "../types/Firestorage.js";
+import { where } from "firebase/firestore"
 import assert from 'assert'
 
 const config = {
@@ -26,7 +27,8 @@ const orm = new FirestoreOrm(config, collection);
 
 describe('Api', function(){
     it('fetch', async function(){
-        const fetched = await orm.collections.testing.functions.fetch()
+        const fetched = await orm.collections.testing.functions.checkByQuery([ where('hello', '==', 'hello') ])
+        console.log(fetched)
         assert.notEqual(fetched.length, 0)
     })
 })

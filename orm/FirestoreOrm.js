@@ -95,7 +95,13 @@ class FirestoreOrm{
             const checkByIdFunc = async function(id){
                 const docRef = doc(this.db, collectionName, id)
                 const docSnap = await getDoc(docRef)
-                return docSnap.exists
+                return docSnap.exists()
+            }.bind(this)
+
+            const checkByQueryFunctionName = 'checkByQuery'
+            const checkByQueryFunc = async function(queries){
+                const snapshot = await getDocs(query(this.collections[collectionName].collection, ...queries))
+                return !snapshot.empty
             }.bind(this)
 
             // const capitalized = capitalizeFirstLetter(collectionName)
@@ -191,11 +197,13 @@ class FirestoreOrm{
             }.bind(this)
 
             FirestoreOrm.definePropertyFunction(checkByIdFunctionName, this.collections[collectionName].functions, checkByIdFunc)
+            FirestoreOrm.definePropertyFunction(checkByQueryFunctionName, this.collections[collectionName].functions, checkByQueryFunc)
             FirestoreOrm.definePropertyFunction(fetchByIdFunctionName, this.collections[collectionName].functions, fetchByIdFunc)
             FirestoreOrm.definePropertyFunction(fetchFunctionName, this.collections[collectionName].functions, fetchFunction)
             FirestoreOrm.definePropertyFunction(fetchQueryFunctionName, this.collections[collectionName].functions, fetchQueryFunction)
 
             FirestoreOrm.definePropertyFunction(checkByIdFunctionName, this[collectionName].functions, checkByIdFunc)
+            FirestoreOrm.definePropertyFunction(checkByQueryFunctionName, this[collectionName].functions, checkByQueryFunc)
             FirestoreOrm.definePropertyFunction(fetchByIdFunctionName, this[collectionName].functions, fetchByIdFunc)
             FirestoreOrm.definePropertyFunction(fetchFunctionName, this[collectionName].functions, fetchFunction)
             FirestoreOrm.definePropertyFunction(fetchQueryFunctionName, this[collectionName].functions, fetchQueryFunction)
