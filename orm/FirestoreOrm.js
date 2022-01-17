@@ -55,7 +55,7 @@ class FirestoreOrm{
             const createFunction = async function(data){
                 const docRef = collection(this.db, collectionName)
                 const procData = Object.keys(this.collectionConfig[collectionName]).reduce((acc, field) => {
-                    if(data[field]){
+                    if(data[field] !== undefined && data[field] !== null){
                         acc[field] = data[field]
                     }
                     return acc
