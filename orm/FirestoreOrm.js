@@ -45,6 +45,7 @@ class FirestoreOrm{
                 return onSnapshot(q, func, error)
             }.bind(this)
             FirestoreOrm.definePropertyFunction(registrarFunctionName, this.collections[collectionName].functions, registrarFunction)
+            FirestoreOrm.definePropertyFunction(registrarFunctionName, this[collectionName].functions, registrarFunction)
         })
     }
 
@@ -66,6 +67,7 @@ class FirestoreOrm{
                 })
             }.bind(this)
             FirestoreOrm.definePropertyFunction(deleteByIdFunctionName, this.collections[collectionName].functions, deleteByIdFunction)
+            FirestoreOrm.definePropertyFunction(deleteByIdFunctionName, this[collectionName].functions, deleteByIdFunction)
         })
     }
 
@@ -83,11 +85,19 @@ class FirestoreOrm{
                 })
             }.bind(this)
             FirestoreOrm.definePropertyFunction(updateByIdFunctionName, this.collections[collectionName].functions, updateByIdFunction)
+            FirestoreOrm.definePropertyFunction(updateByIdFunctionName, this[collectionName].functions, updateByIdFunction)
         })
     }
 
     buildFetchFunctions(){
         Object.keys(this.collections).forEach((collectionName) => {
+            const checkByIdFunctionName = 'checkById'
+            const checkByIdFunc = async function(id){
+                const docRef = doc(this.db, collectionName, id)
+                const docSnap = await getDoc(docRef)
+                return docSnap.exists
+            }.bind(this)
+
             // const capitalized = capitalizeFirstLetter(collectionName)
             const fetchByIdFunctionName = 'fetchById'
             const fetchByIdFunc = async function(id){
@@ -180,9 +190,15 @@ class FirestoreOrm{
                 return await Promise.all(promises)
             }.bind(this)
 
+            FirestoreOrm.definePropertyFunction(checkByIdFunctionName, this.collections[collectionName].functions, checkByIdFunc)
             FirestoreOrm.definePropertyFunction(fetchByIdFunctionName, this.collections[collectionName].functions, fetchByIdFunc)
             FirestoreOrm.definePropertyFunction(fetchFunctionName, this.collections[collectionName].functions, fetchFunction)
             FirestoreOrm.definePropertyFunction(fetchQueryFunctionName, this.collections[collectionName].functions, fetchQueryFunction)
+
+            FirestoreOrm.definePropertyFunction(checkByIdFunctionName, this[collectionName].functions, checkByIdFunc)
+            FirestoreOrm.definePropertyFunction(fetchByIdFunctionName, this[collectionName].functions, fetchByIdFunc)
+            FirestoreOrm.definePropertyFunction(fetchFunctionName, this[collectionName].functions, fetchFunction)
+            FirestoreOrm.definePropertyFunction(fetchQueryFunctionName, this[collectionName].functions, fetchQueryFunction)
         })
     }
 
