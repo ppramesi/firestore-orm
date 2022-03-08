@@ -14,12 +14,46 @@ const config = {
 }
 
 const collection = {
-    testing: {
-        test: {
+    recipes: {
+        description: {
             type: String
         },
-        hello: {
+        image: {
+            type: Firestorage
+        },
+        ingredients: {
+            type: Array
+        },
+        text: {
             type: String
+        },
+        title: {
+            type: String
+        },
+        tags: {
+            type: Array
+        }
+    },
+    spices: {
+        description: {
+            type: String
+        },
+        image: {
+            type: Firestorage
+        },
+        name: {
+            type: String
+        },
+        price: {
+            type: Number
+        }
+    },
+    connections: {
+        identifier: {
+            type: String
+        },
+        open: {
+            type: Number
         }
     }
 }
@@ -27,8 +61,17 @@ const orm = new FirestoreOrm(config, collection);
 
 describe('Api', function(){
     it('fetch', async function(){
-        const fetched = await orm.collections.testing.functions.create({ hello: 'hi', test: 'hoha' })
+        const fetched = await orm.collections.recipes.functions.fetch()
         console.log(fetched)
         assert.notEqual(fetched.length, 0)
+
+        const promises = fetched.reduce((acc, v) => {
+            for(let i = 0; i < Math.floor(Math.random() * 5 + 3); i++){
+                acc.push(orm.collections.recipes.functions.create(v))
+            }
+            return acc
+        }, [])
+
+        console.log(await Promise.all(promises))
     })
 })

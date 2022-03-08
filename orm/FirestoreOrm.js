@@ -131,7 +131,7 @@ class FirestoreOrm{
                 const data = docSnap.data()
                 const fields = Object.keys(this.collectionConfig[collectionName])
                 fields.forEach((field) => {
-                    if(this.collectionConfig[collectionName][field].type == Firestorage){
+                    if(this.collectionConfig[collectionName][field].type == Firestorage && /^gs\:\/\//.test(data[field])){
                         toResolveKeys.push(field)
                         toResolve.push(getDownloadURL(ref(this.storage, data[field])))
                     }
@@ -161,7 +161,7 @@ class FirestoreOrm{
                         const toResolve = []
                         const fields = Object.keys(this.collectionConfig[collectionName])
                         fields.forEach((field) => {
-                            if(this.collectionConfig[collectionName][field].type == Firestorage){
+                            if(this.collectionConfig[collectionName][field].type == Firestorage && /^gs\:\/\//.test(data[field])){
                                 toResolveKeys.push(field)
                                 toResolve.push(getDownloadURL(ref(this.storage, data[field])))
                             }
@@ -196,7 +196,7 @@ class FirestoreOrm{
                         const toResolve = []
                         const fields = Object.keys(this.collectionConfig[collectionName])
                         fields.forEach((field) => {
-                            if(this.collectionConfig[collectionName][field].type == Firestorage){
+                            if(this.collectionConfig[collectionName][field].type == Firestorage && /^gs\:\/\//.test(data[field])){
                                 toResolveKeys.push(field)
                                 toResolve.push(getDownloadURL(ref(this.storage, data[field])))
                             }
